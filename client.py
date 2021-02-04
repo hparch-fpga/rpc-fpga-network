@@ -43,9 +43,8 @@ receiveThread.start()
 # str.encode is used to turn the string message into bytes so it can be sent across the network
 while True:
     message = input()
-    a = np.random.rand(128, 128).astype(dtype=np.float32)
-    b = np.random.rand(128, 128).astype(dtype=np.float32)
-    temp = (a, b)
+    a = str(np.random.rand(128, 128).astype(dtype=np.float32))
+    b = str(np.random.rand(128, 128).astype(dtype=np.float32))
     before = time.time()
     print(before)
-    sock.sendall(str.encode(temp))
+    sock.sendall(str.encode(a + b))
