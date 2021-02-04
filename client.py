@@ -14,8 +14,8 @@ def receive(socket, signal):
             data = socket.recv(32)
             after = time.time()
             print(after)
-            print(after-before)
-            print(str(data.decode("utf-8")))
+            print("diff" + after-before)
+            # print(str(data.decode("utf-8")))
         except:
             print("You have been disconnected from the server")
             signal = False
