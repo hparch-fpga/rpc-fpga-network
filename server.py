@@ -1,6 +1,15 @@
+import pickle
 import socket
 import threading
-import time
+
+import numpy as np
+
+from util import recv_all
+
+
+def do_computation(adj: np.ndarray, start_node: int):
+    # TODO
+    return adj
 
 
 # Variables for holding information about connections
@@ -13,7 +22,7 @@ total_connections = 0
 
 
 class Client(threading.Thread):
-    def __init__(self, socket, address, id, name, signal):
+    def __init__(self, socket: socket.socket, address, id, name, signal):
         threading.Thread.__init__(self)
         self.socket = socket
         self.address = address
@@ -30,49 +39,40 @@ class Client(threading.Thread):
     # client aside from the client that has sent it
     # .decode is used to convert the byte data into a printable string
     def run(self):
-        while self.signal:
-            try:
-                data = self.socket.recv(32)
-            except:
-                print("Client " + str(self.address) + " has disconnected")
-                self.signal = False
-                connections.remove(self)
-                break
-            if data != "":
-                print(time.time())
-                print("ID " + str(self.id) + ": " + str(data.decode("utf-8")))
-                for client in connections:
-                    # if client.id != self.id:
-                    client.socket.sendall(data)
+        data = recv_all(self.socket)
+        print(data.hex())
 
-# Wait for new connections
+        if not data:
+            return
 
-
-def newConnections(socket):
-    while True:
-        sock, address = socket.accept()
-        global total_connections
-        connections.append(
-            Client(sock, address, total_connections, "Name", True))
-        connections[len(connections) - 1].start()
-        print("New connection at ID " + str(connections[len(connections) - 1]))
-        total_connections += 1
+        return_data = do_computation(*pickle.loads(data))
+        if return_data is not None:
+            self.socket.send(pickle.dumps(return_data))
 
 
 def main():
     # Get host and port
-    host = input("Host: ")
-    port = int(input("Port: "))
+    # host = input("Host: ")
+    # port = int(input("Port: "))
+    host = "localhost"
+    port = 52128
 
     # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((host, port))
-    sock.listen(5)
+    try:
+        sock.bind((host, port))
+        sock.listen(5)
 
-    # Create new thread to wait for connections
-    newConnectionsThread = threading.Thread(
-        target=newConnections, args=(sock,))
-    newConnectionsThread.start()
+        while True:
+            s, address = sock.accept()
+            global total_connections
+            client = Client(s, address, total_connections, "Name", True)
+            connections.append(client)
+            client.start()
+            print("New connection at ID " + str(client))
+            total_connections += 1
+    finally:
+        sock.close()
 
 
 main()

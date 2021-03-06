@@ -1,30 +1,16 @@
+import pickle
 import socket
-import threading
 import sys
+
 import numpy as np
-import time
 
-# Wait for incoming data from server
-# .decode is used to turn the message in bytes to a string
-
-
-def receive(socket, signal):
-    while signal:
-        try:
-            data = socket.recv(32)
-            after = time.time()
-            print(after)
-            print("diff" + after-before)
-            # print(str(data.decode("utf-8")))
-        except:
-            print("You have been disconnected from the server")
-            signal = False
-            break
-
+from util import recv_all
 
 # Get host and port
-host = input("Host: ")
-port = int(input("Port: "))
+# host = input("Host: ")
+# port = int(input("Port: "))
+host = "localhost"
+port = 52128
 
 # Attempt connection to server
 try:
@@ -35,16 +21,11 @@ except:
     input("Press enter to quit")
     sys.exit(0)
 
-# Create new thread to wait for data
-receiveThread = threading.Thread(target=receive, args=(sock, True))
-receiveThread.start()
 
-# Send data to server
-# str.encode is used to turn the string message into bytes so it can be sent across the network
-while True:
-    message = input()
-    a = str(np.random.rand(128, 128).astype(dtype=np.float32))
-    b = str(np.random.rand(128, 128).astype(dtype=np.float32))
-    before = time.time()
-    print(before)
-    sock.sendall(str.encode(a + b))
+adjacency_matrix = np.array([1, 2, 3])
+start_node = 1
+input_ = (adjacency_matrix, start_node)
+print(pickle.dumps(input_).hex())
+sock.sendall(pickle.dumps(input_))
+output = pickle.loads(recv_all(sock))
+print(output)
