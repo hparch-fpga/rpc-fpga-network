@@ -2,14 +2,27 @@ import pickle
 import socket
 import threading
 
+import networkx as nx
 import numpy as np
 
 from util import recv_all
 
 
-def do_computation(adj: np.ndarray, start_node: int):
-    # TODO
-    return adj
+# N = 8
+# from pynq import Overlay, Xlnk
+# overlay = Overlay("/home/xilinx/matmult/overlay/matmult/matmult.bit")
+# dma = overlay.axi_dma_0
+# mmult_ip = overlay.dijkstra_1
+# xlnk = Xlnk()
+
+# in_buf = xlnk.cma_array(shape=(N, N), dtype=np.int8)
+# out_buf = xlnk.cma_array(shape=(N,), dtype=np.int8)
+
+
+def do_computation(adj: np.ndarray, start_node: int, end_node: int):
+    G = nx.from_numpy_matrix(adj)
+    path = nx.shortest_path(G, source=start_node, target=end_node)
+    return np.array(path)
 
 
 # Variables for holding information about connections
@@ -40,7 +53,6 @@ class Client(threading.Thread):
     # .decode is used to convert the byte data into a printable string
     def run(self):
         data = recv_all(self.socket)
-        print(data.hex())
 
         if not data:
             return
@@ -52,10 +64,10 @@ class Client(threading.Thread):
 
 def main():
     # Get host and port
-    # host = input("Host: ")
-    # port = int(input("Port: "))
-    host = "localhost"
-    port = 52128
+    host = input("Host: ")
+    port = int(input("Port: "))
+    # host = "localhost"
+    # port = 52128
 
     # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
