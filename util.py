@@ -23,8 +23,10 @@ def highlight_path(adjacency_matrix: np.ndarray, path: List[int]):
     nx.draw(G, pos, node_color="k")
     # draw path in red
     nx.draw_networkx_nodes(G, pos, nodelist=path, node_color="r")
-    nx.draw_networkx_edges(
-        G, pos, edgelist=list(zip(path, path[1:])), edge_color="r", width=10
-    )
+    nx.draw_networkx_labels(G, pos, font_color="w")
+    # nx.draw_networkx_edges(
+    #     G, pos, edgelist=list(zip(path, path[1:])), edge_color="r", width=1
+    # )
+    nx.draw_networkx_edge_labels(G, pos)
     plt.axis("equal")
     plt.show()
