@@ -67,7 +67,7 @@ def main():
     # host = input("Host: ")
     # port = int(input("Port: "))
     host = "localhost"
-    port = 52128
+    port = 52129
 
     # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
