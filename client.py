@@ -6,10 +6,10 @@ import sys
 from util import highlight_path, recv_all
 
 # Get host and port
-host = input("Host: ")
-port = int(input("Port: "))
-# host = "localhost"
-# port = 52128
+# host = input("Host: ")
+# port = int(input("Port: "))
+host = "localhost"
+port = 52128
 
 # Attempt connection to server
 try:

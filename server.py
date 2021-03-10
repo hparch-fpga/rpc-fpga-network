@@ -64,10 +64,10 @@ class Client(threading.Thread):
 
 def main():
     # Get host and port
-    host = input("Host: ")
-    port = int(input("Port: "))
-    # host = "localhost"
-    # port = 52128
+    # host = input("Host: ")
+    # port = int(input("Port: "))
+    host = "localhost"
+    port = 52128
 
     # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
