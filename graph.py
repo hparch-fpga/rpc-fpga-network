@@ -2,7 +2,7 @@ import numpy as np
 
 adjacency_matrix = np.random.randint(20, size=(8, 8))
 
-for x in range(0, 7):
+for x in range(0, 8):
     adjacency_matrix[x][x] = 255
 
 print(adjacency_matrix)
