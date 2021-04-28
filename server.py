@@ -1,5 +1,6 @@
 import pickle
 import socket
+import time
 import threading
 
 import networkx as nx
@@ -7,7 +8,7 @@ import numpy as np
 
 from util import recv_all
 
-
+start_time = 0
 # N = 8
 # from pynq import Overlay, Xlnk
 # overlay = Overlay("/home/xilinx/matmult/overlay/matmult/matmult.bit")
@@ -53,6 +54,7 @@ class Client(threading.Thread):
     # .decode is used to convert the byte data into a printable string
     def run(self):
         data = recv_all(self.socket)
+        start_time = time.time()
 
         if not data:
             return
@@ -60,6 +62,7 @@ class Client(threading.Thread):
         return_data = do_computation(*pickle.loads(data))
         if return_data is not None:
             self.socket.send(pickle.dumps(return_data))
+            print(time.time() - time.start())
 
 
 def main():
